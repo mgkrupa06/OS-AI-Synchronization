@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!-- saved from url=(0133)file:///C:/Users/Lenovo/Downloads/OS_Dining_Philosophers_Q1/OS_Dining_Philosophers_Q1/generated_html/dining_philosophers_monitor.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Dining Philosophers — Monitor Solution</title>
+<style>
+body{font-family:Arial,sans-serif;margin:24px;background:#f5f7fb;color:#202533}
+h1{margin-bottom:6px}.note{color:#515b6b}.stats{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+.stat{background:white;padding:12px 16px;border-radius:10px;box-shadow:0 1px 5px #ccd2df}
+button{padding:8px 12px;margin:4px;border:0;border-radius:7px;cursor:pointer;background:#273b67;color:white}
+input{vertical-align:middle}table{border-collapse:collapse;width:100%;background:white;margin-top:16px}
+th,td{padding:9px;border-bottom:1px solid #e1e5ed;text-align:left;font-size:14px}
+th{background:#e9edf5;position:sticky;top:0}.timeline{display:grid;grid-template-columns:100px 1fr;gap:8px;margin:16px 0}
+.track{background:white;border-radius:8px;padding:8px;min-height:32px}.pill{display:inline-block;margin:2px;padding:4px 6px;border-radius:5px;background:#dce8ff;font-size:12px}
+.controls{margin:12px 0}.table-wrap{overflow:auto;max-height:480px}
+</style></head><body>
+<h1>Dining Philosophers — Monitor Solution</h1><p class="note">Generated from the monitor program's recorded events after execution; this is not a pre-scripted trace.</p>
+<div class="stats"><div class="stat"><b>Solution</b><br>Monitor (synchronized / wait / notifyAll)</div><div class="stat"><b>Philosophers</b><br>4</div>
+<div class="stat"><b>Logical chopsticks</b><br>4</div><div class="stat"><b>Recorded events</b><br><span id="count">45</span></div></div>
+<h2>Event timeline</h2><p class="note">Play, pause, reset, or move the slider to replay recorded events in sequence.</p>
+<div class="controls"><button id="play">Play</button><button id="pause">Pause</button><button id="reset">Reset</button>
+<input id="seek" type="range" min="0" max="44" value="0" style="width:min(520px,60%)"><span id="position">7 / 45</span></div>
+<div id="timeline" class="timeline"><div>Philosopher P0</div><div class="track"><span class="pill">THINKING — Thinking before meal 1</span><span class="pill">HUNGRY — Requests permission to eat</span></div><div>Philosopher P1</div><div class="track"><span class="pill">THINKING — Thinking before meal 1</span><span class="pill">HUNGRY — Requests permission to eat</span><span class="pill">EATING — Monitor granted permission; logical forks F1 and F2 are reserved</span></div><div>Philosopher P2</div><div class="track"><span class="pill">THINKING — Thinking before meal 1</span></div><div>Philosopher P3</div><div class="track"><span class="pill">THINKING — Thinking before meal 1</span></div></div><h2>Actual execution log</h2>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Elapsed ms</th><th>Philosopher</th><th>State</th><th>Event detail</th></tr></thead>
+<tbody><tr><td>1</td><td>22</td><td>P1</td><td>THINKING</td><td>Thinking before meal 1</td></tr>
+<tr><td>2</td><td>295</td><td>P3</td><td>THINKING</td><td>Thinking before meal 1</td></tr>
+<tr><td>3</td><td>311</td><td>P2</td><td>THINKING</td><td>Thinking before meal 1</td></tr>
+<tr><td>4</td><td>333</td><td>P0</td><td>THINKING</td><td>Thinking before meal 1</td></tr>
+<tr><td>5</td><td>476</td><td>P1</td><td>HUNGRY</td><td>Requests permission to eat</td></tr>
+<tr><td>6</td><td>494</td><td>P1</td><td>EATING</td><td>Monitor granted permission; logical forks F1 and F2 are reserved</td></tr>
+<tr><td>7</td><td>497</td><td>P0</td><td>HUNGRY</td><td>Requests permission to eat</td></tr>
+<tr><td>8</td><td>500</td><td>P0</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>9</td><td>538</td><td>P2</td><td>HUNGRY</td><td>Requests permission to eat</td></tr>
+<tr><td>10</td><td>544</td><td>P2</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>11</td><td>551</td><td>P3</td><td>HUNGRY</td><td>Requests permission to eat</td></tr>
+<tr><td>12</td><td>557</td><td>P3</td><td>EATING</td><td>Monitor granted permission; logical forks F3 and F0 are reserved</td></tr>
+<tr><td>13</td><td>713</td><td>P1</td><td>RELEASING</td><td>Leaves critical section and releases logical forks</td></tr>
+<tr><td>14</td><td>721</td><td>P1</td><td>THINKING</td><td>Thinking before meal 2</td></tr>
+<tr><td>15</td><td>4666</td><td>P0</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>16</td><td>4674</td><td>P1</td><td>HUNGRY</td><td>Requests permission to eat</td></tr>
+<tr><td>17</td><td>4683</td><td>P1</td><td>EATING</td><td>Monitor granted permission; logical forks F1 and F2 are reserved</td></tr>
+<tr><td>18</td><td>4691</td><td>P3</td><td>RELEASING</td><td>Leaves critical section and releases logical forks</td></tr>
+<tr><td>19</td><td>4701</td><td>P3</td><td>THINKING</td><td>Thinking before meal 2</td></tr>
+<tr><td>20</td><td>4708</td><td>P2</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>21</td><td>4727</td><td>P0</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>22</td><td>4898</td><td>P1</td><td>RELEASING</td><td>Leaves critical section and releases logical forks</td></tr>
+<tr><td>23</td><td>4908</td><td>P1</td><td>FINISHED</td><td>Completed all meals</td></tr>
+<tr><td>24</td><td>4917</td><td>P2</td><td>EATING</td><td>Monitor granted permission; logical forks F2 and F3 are reserved</td></tr>
+<tr><td>25</td><td>4932</td><td>P0</td><td>EATING</td><td>Monitor granted permission; logical forks F0 and F1 are reserved</td></tr>
+<tr><td>26</td><td>4960</td><td>P3</td><td>HUNGRY</td><td>Requests permission to eat</td></tr>
+<tr><td>27</td><td>4969</td><td>P3</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>28</td><td>5145</td><td>P0</td><td>RELEASING</td><td>Leaves critical section and releases logical forks</td></tr>
+<tr><td>29</td><td>5159</td><td>P3</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>30</td><td>5164</td><td>P2</td><td>RELEASING</td><td>Leaves critical section and releases logical forks</td></tr>
+<tr><td>31</td><td>5168</td><td>P0</td><td>THINKING</td><td>Thinking before meal 2</td></tr>
+<tr><td>32</td><td>5172</td><td>P2</td><td>THINKING</td><td>Thinking before meal 2</td></tr>
+<tr><td>33</td><td>5181</td><td>P3</td><td>EATING</td><td>Monitor granted permission; logical forks F3 and F0 are reserved</td></tr>
+<tr><td>34</td><td>5313</td><td>P0</td><td>HUNGRY</td><td>Requests permission to eat</td></tr>
+<tr><td>35</td><td>5319</td><td>P0</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>36</td><td>5388</td><td>P2</td><td>HUNGRY</td><td>Requests permission to eat</td></tr>
+<tr><td>37</td><td>5394</td><td>P2</td><td>WAITING</td><td>A neighbouring philosopher is eating; monitor wait()</td></tr>
+<tr><td>38</td><td>5441</td><td>P3</td><td>RELEASING</td><td>Leaves critical section and releases logical forks</td></tr>
+<tr><td>39</td><td>5443</td><td>P3</td><td>FINISHED</td><td>Completed all meals</td></tr>
+<tr><td>40</td><td>5450</td><td>P0</td><td>EATING</td><td>Monitor granted permission; logical forks F0 and F1 are reserved</td></tr>
+<tr><td>41</td><td>5456</td><td>P2</td><td>EATING</td><td>Monitor granted permission; logical forks F2 and F3 are reserved</td></tr>
+<tr><td>42</td><td>5639</td><td>P0</td><td>RELEASING</td><td>Leaves critical section and releases logical forks</td></tr>
+<tr><td>43</td><td>5645</td><td>P0</td><td>FINISHED</td><td>Completed all meals</td></tr>
+<tr><td>44</td><td>5684</td><td>P2</td><td>RELEASING</td><td>Leaves critical section and releases logical forks</td></tr>
+<tr><td>45</td><td>5687</td><td>P2</td><td>FINISHED</td><td>Completed all meals</td></tr>
+</tbody></table></div>
+<script>
+const events=[{seq:1,ms:22,p:'P1',state:'THINKING',detail:'Thinking before meal 1'},{seq:2,ms:295,p:'P3',state:'THINKING',detail:'Thinking before meal 1'},{seq:3,ms:311,p:'P2',state:'THINKING',detail:'Thinking before meal 1'},{seq:4,ms:333,p:'P0',state:'THINKING',detail:'Thinking before meal 1'},{seq:5,ms:476,p:'P1',state:'HUNGRY',detail:'Requests permission to eat'},{seq:6,ms:494,p:'P1',state:'EATING',detail:'Monitor granted permission; logical forks F1 and F2 are reserved'},{seq:7,ms:497,p:'P0',state:'HUNGRY',detail:'Requests permission to eat'},{seq:8,ms:500,p:'P0',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:9,ms:538,p:'P2',state:'HUNGRY',detail:'Requests permission to eat'},{seq:10,ms:544,p:'P2',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:11,ms:551,p:'P3',state:'HUNGRY',detail:'Requests permission to eat'},{seq:12,ms:557,p:'P3',state:'EATING',detail:'Monitor granted permission; logical forks F3 and F0 are reserved'},{seq:13,ms:713,p:'P1',state:'RELEASING',detail:'Leaves critical section and releases logical forks'},{seq:14,ms:721,p:'P1',state:'THINKING',detail:'Thinking before meal 2'},{seq:15,ms:4666,p:'P0',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:16,ms:4674,p:'P1',state:'HUNGRY',detail:'Requests permission to eat'},{seq:17,ms:4683,p:'P1',state:'EATING',detail:'Monitor granted permission; logical forks F1 and F2 are reserved'},{seq:18,ms:4691,p:'P3',state:'RELEASING',detail:'Leaves critical section and releases logical forks'},{seq:19,ms:4701,p:'P3',state:'THINKING',detail:'Thinking before meal 2'},{seq:20,ms:4708,p:'P2',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:21,ms:4727,p:'P0',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:22,ms:4898,p:'P1',state:'RELEASING',detail:'Leaves critical section and releases logical forks'},{seq:23,ms:4908,p:'P1',state:'FINISHED',detail:'Completed all meals'},{seq:24,ms:4917,p:'P2',state:'EATING',detail:'Monitor granted permission; logical forks F2 and F3 are reserved'},{seq:25,ms:4932,p:'P0',state:'EATING',detail:'Monitor granted permission; logical forks F0 and F1 are reserved'},{seq:26,ms:4960,p:'P3',state:'HUNGRY',detail:'Requests permission to eat'},{seq:27,ms:4969,p:'P3',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:28,ms:5145,p:'P0',state:'RELEASING',detail:'Leaves critical section and releases logical forks'},{seq:29,ms:5159,p:'P3',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:30,ms:5164,p:'P2',state:'RELEASING',detail:'Leaves critical section and releases logical forks'},{seq:31,ms:5168,p:'P0',state:'THINKING',detail:'Thinking before meal 2'},{seq:32,ms:5172,p:'P2',state:'THINKING',detail:'Thinking before meal 2'},{seq:33,ms:5181,p:'P3',state:'EATING',detail:'Monitor granted permission; logical forks F3 and F0 are reserved'},{seq:34,ms:5313,p:'P0',state:'HUNGRY',detail:'Requests permission to eat'},{seq:35,ms:5319,p:'P0',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:36,ms:5388,p:'P2',state:'HUNGRY',detail:'Requests permission to eat'},{seq:37,ms:5394,p:'P2',state:'WAITING',detail:'A neighbouring philosopher is eating; monitor wait()'},{seq:38,ms:5441,p:'P3',state:'RELEASING',detail:'Leaves critical section and releases logical forks'},{seq:39,ms:5443,p:'P3',state:'FINISHED',detail:'Completed all meals'},{seq:40,ms:5450,p:'P0',state:'EATING',detail:'Monitor granted permission; logical forks F0 and F1 are reserved'},{seq:41,ms:5456,p:'P2',state:'EATING',detail:'Monitor granted permission; logical forks F2 and F3 are reserved'},{seq:42,ms:5639,p:'P0',state:'RELEASING',detail:'Leaves critical section and releases logical forks'},{seq:43,ms:5645,p:'P0',state:'FINISHED',detail:'Completed all meals'},{seq:44,ms:5684,p:'P2',state:'RELEASING',detail:'Leaves critical section and releases logical forks'},{seq:45,ms:5687,p:'P2',state:'FINISHED',detail:'Completed all meals'}];document.getElementById('count').textContent=events.length;
+const timeline=document.getElementById('timeline'),seek=document.getElementById('seek');seek.max=Math.max(0,events.length-1);
+let cursor=0,timer=null;
+function render(){cursor=Math.max(0,Math.min(cursor,events.length-1));seek.value=cursor;
+  document.getElementById('position').textContent=(events.length?cursor+1:0)+' / '+events.length;timeline.innerHTML='';
+  for(let p=0;p<4;p++){let label=document.createElement('div');label.textContent='Philosopher P'+p;timeline.appendChild(label);
+    let track=document.createElement('div');track.className='track';
+    events.slice(0,cursor+1).filter(e=>e.p==='P'+p).slice(-5).forEach(e=>{let pill=document.createElement('span');
+      pill.className='pill';pill.textContent=e.state+' — '+e.detail;track.appendChild(pill);});timeline.appendChild(track);}
+}
+document.getElementById('play').onclick=()=>{if(timer)return;timer=setInterval(()=>{if(cursor>=events.length-1){clearInterval(timer);timer=null;return;}cursor++;render();},350);};
+document.getElementById('pause').onclick=()=>{clearInterval(timer);timer=null;};
+document.getElementById('reset').onclick=()=>{clearInterval(timer);timer=null;cursor=0;render();};
+seek.oninput=()=>{cursor=Number(seek.value);render();};render();
+</script>
+</body></html>

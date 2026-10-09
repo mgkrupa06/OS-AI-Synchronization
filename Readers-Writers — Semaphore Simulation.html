@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<!-- saved from url=(0135)file:///C:/Users/Lenovo/Downloads/ReadersWritersSemaphore_Updated/ReadersWritersSemaphore/generated_html/readers_writers_semaphore.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Readers-Writers — Semaphore Simulation</title>
+<style>
+  :root { color-scheme: light; }
+  body { font-family: Arial, sans-serif; margin: 24px; color: #202124; background: #f7f8fa; }
+  h1 { margin-bottom: 8px; }
+  .summary, .player, .log-panel { background: white; border: 1px solid #d9dee7; border-radius: 12px; padding: 18px; margin: 16px 0; }
+  .summary { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+  .metric { font-size: 16px; }
+  .metric strong { display: block; font-size: 22px; margin-top: 5px; }
+  .status { border-left: 6px solid #64748b; padding: 12px 14px; background: #f1f5f9; border-radius: 6px; margin: 12px 0; }
+  .status.READING { border-color: #16803c; background: #ecfdf3; }
+  .status.WRITING, .status.UPDATED { border-color: #b45309; background: #fff7ed; }
+  .status.WAITING, .status.HUNGRY { border-color: #64748b; background: #f1f5f9; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  button { border: 0; border-radius: 7px; padding: 10px 16px; cursor: pointer; background: #1d4ed8; color: white; font-size: 14px; }
+  button.secondary { background: #475569; }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  input[type=range] { width: min(600px, 100%); }
+  .slider-wrap { margin-top: 14px; }
+  .progress { height: 8px; background: #e2e8f0; border-radius: 20px; overflow: hidden; margin-top: 10px; }
+  .progress > div { height: 100%; width: 0; background: #2563eb; transition: width .12s linear; }
+  .table-wrap { overflow-x: auto; max-height: 460px; }
+  table { border-collapse: collapse; width: 100%; background: white; }
+  th, td { border: 1px solid #d1d5db; padding: 9px 10px; text-align: left; }
+  th { background: #e5e7eb; position: sticky; top: 0; }
+  tbody tr.current { outline: 3px solid #2563eb; outline-offset: -3px; background: #dbeafe; }
+  tbody tr.past { background: #f8fafc; color: #64748b; }
+  .hint { color: #475569; font-size: 14px; }
+  @media (max-width: 600px) { body { margin: 12px; } .summary, .player, .log-panel { padding: 12px; } }
+</style>
+</head>
+<body>
+  <h1>Readers-Writers — Semaphore Solution</h1>
+  <p class="hint">Replay is driven by the events recorded during this program's real threaded execution.</p>
+  <section class="summary">
+    <div class="metric">Readers<strong>3</strong></div>
+    <div class="metric">Writers<strong>2</strong></div>
+    <div class="metric">Operations per thread<strong>2</strong></div>
+    <div class="metric">Final sharedData<strong>4</strong></div>
+    <div class="metric">Recorded events<strong id="totalEvents">50</strong></div>
+  </section>
+
+  <section class="player">
+    <h2>Execution Timeline</h2>
+    <div id="eventCard" class="status |">
+      <strong id="eventTitle">#50 — SYSTEM | |</strong>
+      <p id="eventDetail">END | Final sharedData = 4</p>
+    </div>
+    <div class="controls">
+      <button id="playBtn" onclick="play()">▶ Play</button>
+      <button id="pauseBtn" class="secondary" onclick="pause()">⏸ Pause</button>
+      <button class="secondary" onclick="resetReplay()">↻ Reset</button>
+      <span id="counter">Event 50 of 50</span>
+    </div>
+    <div class="slider-wrap">
+      <input id="timeline" type="range" min="0" max="49" value="0" step="1" aria-label="Execution timeline" oninput="jumpTo(this.value)">
+      <div class="progress"><div id="progressBar" style="width: 100%;"></div></div>
+    </div>
+  </section>
+
+  <section class="log-panel">
+    <h2>Actual Execution Log</h2>
+    <p class="hint">The highlighted row follows the timeline. Use the slider to inspect any recorded event.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>No.</th><th>Actor</th><th>State</th><th>Event details</th></tr></thead>
+        <tbody>
+          <tr id="row-0" class="past"><td>1</td><td>R1</td><td>|</td><td>HUNGRY | Wants to read operation 1</td></tr>
+<tr id="row-1" class="past"><td>2</td><td>R2</td><td>|</td><td>HUNGRY | Wants to read operation 1</td></tr>
+<tr id="row-2" class="past"><td>3</td><td>R1</td><td>|</td><td>WAITING | First reader requests resource</td></tr>
+<tr id="row-3" class="past"><td>4</td><td>R1</td><td>|</td><td>READING | Active readers = 1</td></tr>
+<tr id="row-4" class="past"><td>5</td><td>R2</td><td>|</td><td>READING | Active readers = 2</td></tr>
+<tr id="row-5" class="past"><td>6</td><td>R1</td><td>|</td><td>READING | Read sharedData = 0</td></tr>
+<tr id="row-6" class="past"><td>7</td><td>R2</td><td>|</td><td>READING | Read sharedData = 0</td></tr>
+<tr id="row-7" class="past"><td>8</td><td>R0</td><td>|</td><td>HUNGRY | Wants to read operation 1</td></tr>
+<tr id="row-8" class="past"><td>9</td><td>R0</td><td>|</td><td>READING | Active readers = 3</td></tr>
+<tr id="row-9" class="past"><td>10</td><td>R0</td><td>|</td><td>READING | Read sharedData = 0</td></tr>
+<tr id="row-10" class="past"><td>11</td><td>W0</td><td>|</td><td>WAITING | Requests exclusive write access</td></tr>
+<tr id="row-11" class="past"><td>12</td><td>W1</td><td>|</td><td>WAITING | Requests exclusive write access</td></tr>
+<tr id="row-12" class="past"><td>13</td><td>R2</td><td>|</td><td>RELEASING | Active readers = 2</td></tr>
+<tr id="row-13" class="past"><td>14</td><td>R1</td><td>|</td><td>RELEASING | Active readers = 1</td></tr>
+<tr id="row-14" class="past"><td>15</td><td>R0</td><td>|</td><td>RELEASING | Active readers = 0</td></tr>
+<tr id="row-15" class="past"><td>16</td><td>W0</td><td>|</td><td>WRITING | Entered writing section</td></tr>
+<tr id="row-16" class="past"><td>17</td><td>R0</td><td>|</td><td>RELEASED | Last reader released resource</td></tr>
+<tr id="row-17" class="past"><td>18</td><td>W0</td><td>|</td><td>UPDATED | sharedData = 1</td></tr>
+<tr id="row-18" class="past"><td>19</td><td>R1</td><td>|</td><td>HUNGRY | Wants to read operation 2</td></tr>
+<tr id="row-19" class="past"><td>20</td><td>R1</td><td>|</td><td>WAITING | First reader requests resource</td></tr>
+<tr id="row-20" class="past"><td>21</td><td>R2</td><td>|</td><td>HUNGRY | Wants to read operation 2</td></tr>
+<tr id="row-21" class="past"><td>22</td><td>R0</td><td>|</td><td>HUNGRY | Wants to read operation 2</td></tr>
+<tr id="row-22" class="past"><td>23</td><td>W0</td><td>|</td><td>RELEASED | Released resource</td></tr>
+<tr id="row-23" class="past"><td>24</td><td>W1</td><td>|</td><td>WRITING | Entered writing section</td></tr>
+<tr id="row-24" class="past"><td>25</td><td>W1</td><td>|</td><td>UPDATED | sharedData = 2</td></tr>
+<tr id="row-25" class="past"><td>26</td><td>W0</td><td>|</td><td>WAITING | Requests exclusive write access</td></tr>
+<tr id="row-26" class="past"><td>27</td><td>W1</td><td>|</td><td>RELEASED | Released resource</td></tr>
+<tr id="row-27" class="past"><td>28</td><td>R1</td><td>|</td><td>READING | Active readers = 1</td></tr>
+<tr id="row-28" class="past"><td>29</td><td>R1</td><td>|</td><td>READING | Read sharedData = 2</td></tr>
+<tr id="row-29" class="past"><td>30</td><td>R2</td><td>|</td><td>READING | Active readers = 2</td></tr>
+<tr id="row-30" class="past"><td>31</td><td>R0</td><td>|</td><td>READING | Active readers = 3</td></tr>
+<tr id="row-31" class="past"><td>32</td><td>R2</td><td>|</td><td>READING | Read sharedData = 2</td></tr>
+<tr id="row-32" class="past"><td>33</td><td>R0</td><td>|</td><td>READING | Read sharedData = 2</td></tr>
+<tr id="row-33" class="past"><td>34</td><td>W1</td><td>|</td><td>WAITING | Requests exclusive write access</td></tr>
+<tr id="row-34" class="past"><td>35</td><td>R0</td><td>|</td><td>RELEASING | Active readers = 2</td></tr>
+<tr id="row-35" class="past"><td>36</td><td>R2</td><td>|</td><td>RELEASING | Active readers = 1</td></tr>
+<tr id="row-36" class="past"><td>37</td><td>R1</td><td>|</td><td>RELEASING | Active readers = 0</td></tr>
+<tr id="row-37" class="past"><td>38</td><td>R1</td><td>|</td><td>RELEASED | Last reader released resource</td></tr>
+<tr id="row-38" class="past"><td>39</td><td>W0</td><td>|</td><td>WRITING | Entered writing section</td></tr>
+<tr id="row-39" class="past"><td>40</td><td>W0</td><td>|</td><td>UPDATED | sharedData = 3</td></tr>
+<tr id="row-40" class="past"><td>41</td><td>R1</td><td>|</td><td>FINISHED | Completed all reads</td></tr>
+<tr id="row-41" class="past"><td>42</td><td>R0</td><td>|</td><td>FINISHED | Completed all reads</td></tr>
+<tr id="row-42" class="past"><td>43</td><td>R2</td><td>|</td><td>FINISHED | Completed all reads</td></tr>
+<tr id="row-43" class="past"><td>44</td><td>W1</td><td>|</td><td>WRITING | Entered writing section</td></tr>
+<tr id="row-44" class="past"><td>45</td><td>W0</td><td>|</td><td>RELEASED | Released resource</td></tr>
+<tr id="row-45" class="past"><td>46</td><td>W1</td><td>|</td><td>UPDATED | sharedData = 4</td></tr>
+<tr id="row-46" class="past"><td>47</td><td>W0</td><td>|</td><td>FINISHED | Completed all writes</td></tr>
+<tr id="row-47" class="past"><td>48</td><td>W1</td><td>|</td><td>RELEASED | Released resource</td></tr>
+<tr id="row-48" class="past"><td>49</td><td>W1</td><td>|</td><td>FINISHED | Completed all writes</td></tr>
+<tr id="row-49" class="current"><td>50</td><td>SYSTEM</td><td>|</td><td>END | Final sharedData = 4</td></tr>
+
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <script>
+    const events = [
+  { actor: "R1", state: "|", detail: "HUNGRY | Wants to read operation 1" },
+  { actor: "R2", state: "|", detail: "HUNGRY | Wants to read operation 1" },
+  { actor: "R1", state: "|", detail: "WAITING | First reader requests resource" },
+  { actor: "R1", state: "|", detail: "READING | Active readers = 1" },
+  { actor: "R2", state: "|", detail: "READING | Active readers = 2" },
+  { actor: "R1", state: "|", detail: "READING | Read sharedData = 0" },
+  { actor: "R2", state: "|", detail: "READING | Read sharedData = 0" },
+  { actor: "R0", state: "|", detail: "HUNGRY | Wants to read operation 1" },
+  { actor: "R0", state: "|", detail: "READING | Active readers = 3" },
+  { actor: "R0", state: "|", detail: "READING | Read sharedData = 0" },
+  { actor: "W0", state: "|", detail: "WAITING | Requests exclusive write access" },
+  { actor: "W1", state: "|", detail: "WAITING | Requests exclusive write access" },
+  { actor: "R2", state: "|", detail: "RELEASING | Active readers = 2" },
+  { actor: "R1", state: "|", detail: "RELEASING | Active readers = 1" },
+  { actor: "R0", state: "|", detail: "RELEASING | Active readers = 0" },
+  { actor: "W0", state: "|", detail: "WRITING | Entered writing section" },
+  { actor: "R0", state: "|", detail: "RELEASED | Last reader released resource" },
+  { actor: "W0", state: "|", detail: "UPDATED | sharedData = 1" },
+  { actor: "R1", state: "|", detail: "HUNGRY | Wants to read operation 2" },
+  { actor: "R1", state: "|", detail: "WAITING | First reader requests resource" },
+  { actor: "R2", state: "|", detail: "HUNGRY | Wants to read operation 2" },
+  { actor: "R0", state: "|", detail: "HUNGRY | Wants to read operation 2" },
+  { actor: "W0", state: "|", detail: "RELEASED | Released resource" },
+  { actor: "W1", state: "|", detail: "WRITING | Entered writing section" },
+  { actor: "W1", state: "|", detail: "UPDATED | sharedData = 2" },
+  { actor: "W0", state: "|", detail: "WAITING | Requests exclusive write access" },
+  { actor: "W1", state: "|", detail: "RELEASED | Released resource" },
+  { actor: "R1", state: "|", detail: "READING | Active readers = 1" },
+  { actor: "R1", state: "|", detail: "READING | Read sharedData = 2" },
+  { actor: "R2", state: "|", detail: "READING | Active readers = 2" },
+  { actor: "R0", state: "|", detail: "READING | Active readers = 3" },
+  { actor: "R2", state: "|", detail: "READING | Read sharedData = 2" },
+  { actor: "R0", state: "|", detail: "READING | Read sharedData = 2" },
+  { actor: "W1", state: "|", detail: "WAITING | Requests exclusive write access" },
+  { actor: "R0", state: "|", detail: "RELEASING | Active readers = 2" },
+  { actor: "R2", state: "|", detail: "RELEASING | Active readers = 1" },
+  { actor: "R1", state: "|", detail: "RELEASING | Active readers = 0" },
+  { actor: "R1", state: "|", detail: "RELEASED | Last reader released resource" },
+  { actor: "W0", state: "|", detail: "WRITING | Entered writing section" },
+  { actor: "W0", state: "|", detail: "UPDATED | sharedData = 3" },
+  { actor: "R1", state: "|", detail: "FINISHED | Completed all reads" },
+  { actor: "R0", state: "|", detail: "FINISHED | Completed all reads" },
+  { actor: "R2", state: "|", detail: "FINISHED | Completed all reads" },
+  { actor: "W1", state: "|", detail: "WRITING | Entered writing section" },
+  { actor: "W0", state: "|", detail: "RELEASED | Released resource" },
+  { actor: "W1", state: "|", detail: "UPDATED | sharedData = 4" },
+  { actor: "W0", state: "|", detail: "FINISHED | Completed all writes" },
+  { actor: "W1", state: "|", detail: "RELEASED | Released resource" },
+  { actor: "W1", state: "|", detail: "FINISHED | Completed all writes" },
+  { actor: "SYSTEM", state: "|", detail: "END | Final sharedData = 4" }
+    ];
+    let index = -1;
+    let timer = null;
+    const timeline = document.getElementById('timeline');
+    document.getElementById('totalEvents').textContent = events.length;
+    timeline.max = Math.max(0, events.length - 1);
+
+    function showEvent(i) {
+      if (!events.length) return;
+      index = Math.max(0, Math.min(Number(i), events.length - 1));
+      const e = events[index];
+      document.getElementById('eventTitle').textContent =
+        '#' + (index + 1) + ' — ' + e.actor + ' | ' + e.state;
+      document.getElementById('eventDetail').textContent = e.detail;
+      const card = document.getElementById('eventCard');
+      card.className = 'status ' + e.state;
+      document.getElementById('counter').textContent =
+        'Event ' + (index + 1) + ' of ' + events.length;
+      timeline.value = index;
+      document.getElementById('progressBar').style.width =
+        ((index + 1) / events.length * 100) + '%';
+      document.querySelectorAll('tbody tr').forEach((row, rowIndex) => {
+        row.classList.toggle('current', rowIndex === index);
+        row.classList.toggle('past', rowIndex < index);
+      });
+      const currentRow = document.getElementById('row-' + index);
+      if (currentRow) currentRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    function play() {
+      if (timer !== null) return;
+      if (index >= events.length - 1) showEvent(0);
+      timer = setInterval(() => {
+        if (index >= events.length - 1) { pause(); return; }
+        showEvent(index + 1);
+      }, 650);
+    }
+    function pause() {
+      if (timer !== null) clearInterval(timer);
+      timer = null;
+    }
+    function resetReplay() {
+      pause();
+      index = -1;
+      document.getElementById('eventTitle').textContent = 'Ready to replay';
+      document.getElementById('eventDetail').textContent =
+        'Press Play to step through the recorded execution.';
+      document.getElementById('eventCard').className = 'status';
+      document.getElementById('counter').textContent = 'Event 0 of ' + events.length;
+      timeline.value = 0;
+      document.getElementById('progressBar').style.width = '0%';
+      document.querySelectorAll('tbody tr').forEach(row => row.classList.remove('current', 'past'));
+    }
+    function jumpTo(value) {
+      pause();
+      showEvent(value);
+    }
+    document.getElementById('pauseBtn').addEventListener('click', pause);
+    resetReplay();
+  </script>
+
+
+</body></html>
